@@ -1,0 +1,56 @@
+question==>https://leetcode.com/problems/design-add-and-search-words-data-structure/
+
+class Trie{
+    public:
+    bool isend;
+    Trie* child[26];
+    Trie(){
+        isend = false;
+        memset(child,NULL,sizeof(child));
+    }
+};
+
+
+class WordDictionary {
+public:
+    Trie* root = new Trie();
+    WordDictionary() {
+        
+    }
+    
+    
+    bool findword(string str,Trie* node){
+        for(int i=0;i<str.size() && node; i++){
+            if(str[i]!='.'){
+                node = node->child[str[i]-'a'];
+            }
+            else{
+                Trie* temp = node;
+                for(int j=0;j<26;j++){
+                    node = temp->child[j];
+                    if(findword(str.substr(i+1,str.size()-i-1),node)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return node && node->isend;
+    }
+    
+    
+    void addWord(string word) {
+        Trie* node = root;
+        for(int i=0;i<word.size();i++){
+            if(node->child[word[i]-'a']==NULL){
+                node->child[word[i]-'a'] = new Trie();
+            }
+            node = node->child[word[i]-'a'];
+        }
+        node->isend = true;
+    }
+    
+    
+    bool search(string word) {
+        return findword(word,root);
+    }
+};
